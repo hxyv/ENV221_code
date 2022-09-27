@@ -31,6 +31,7 @@ cat("Mean = ", mean(df_aq$Wind))
 cat("Maximum = ", max(df_aq$Wind))
 cat("Minimum = ", min(df_aq$Wind))
 cat("Median = ", median(df_aq$Wind))
+summary(df_aq$Wind)
 
 # 3.5 (Continued) The temperature in the dataset was given in F. Add a new column
 # for the temperature in C.
@@ -55,6 +56,7 @@ stud[stud$ID==16, "HOME"]
 # 4.2 (Continued) What is the mean height of male and female students, respectively?
 cat("Average height of male student: ", mean(stud[stud$GENDER=="Male", "HEIGHT"]))
 cat("Average height of female student: ", mean(stud[stud$GENDER=="Female", "HEIGHT"]))
+tapply(stud$HEIGHT, stud$GENDER, mean)
 
 # 4.3 (Continued) What is the mean, maximum, minimum, median of the shoe size in 
 # the whole dataset?
@@ -62,6 +64,7 @@ cat("Mean = ", mean(stud$SHOE))
 cat("Maximum = ", max(stud$SHOE))
 cat("Minimum = ", min(stud$SHOE))
 cat("Median = ", median(stud$SHOE))
+summary(stud$SHOE)
 
 # 4.4 (Continued) How many students knew nothing about statistics? How about R?
 cat(sum(stud$STAT=="1. I know nothing about it.", na.rm=TRUE), 
