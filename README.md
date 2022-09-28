@@ -1,2 +1,2 @@
 # ENV221_code
-- ENV221 lecture, practice, and quiz code.
+- ENV221 lecture, exercise, and quiz code.
