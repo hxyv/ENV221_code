@@ -47,6 +47,17 @@ bmi <- function(height, weight){
     return(x)
 }
 
+bmi2 <- function(height, weight){
+    if(height > 5){
+        x <- weight / (height / 100) ^2
+    } else {
+        x <- weight / height ^ 2
+    }
+    
+    x <- round(x, 2)
+    return(x)
+}
+
 # 2.2 Apply this function to the ENV221 students dataset and add a new column for
 # the BMI values.
 df_stud <- read.csv("data/students_env221.csv")
