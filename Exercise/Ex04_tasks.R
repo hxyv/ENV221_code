@@ -87,7 +87,6 @@ female_bmi
 
 # 3.3 Make a bar plot of the number of the students at different levels in 
 # Statistics and R.
-
 stat_bar <- ggplot(stud) +
                 geom_bar(aes(STAT)) +
                 labs(title = "Number of the students at different levels in Statistics",
