@@ -18,6 +18,52 @@ extract_help <- function(pkg, fn = NULL, to = c("txt", "html", "latex", "ex")){
 extract_help("base", "plot", "html")
 extract_help("graphics", "hist")
 
+?base::plot()
+# Generic function for plotting of R objects.
+
+?pairs()
+# A matrix of scatterplots is produced.
+
+?symbols()
+# This function draws symbols on a plot. One of six symbols; circles, squares, 
+# rectangles, stars, thermometers, and boxplots, can be plotted at a specified 
+# set of x and y coordinates. Specific aspects of the symbols, such as relative 
+# size, can be customized by additional parameters.
+
+?hist()
+# The generic function hist computes a histogram of the given data values. If 
+# plot = TRUE, the resulting object of class "histogram" is plotted by plot.histogram, 
+# before it is returned.
+
+?curve()
+# Draws a curve corresponding to a function over the interval [from, to]. curve 
+# can plot also an expression in the variable xname, default ‘⁠x⁠’.
+
+?barplot()
+# Creates a bar plot with vertical or horizontal bars.
+
+?boxplot()
+# Produce box-and-whisker plot(s) of the given (grouped) values.
+
+?coplot()
+# This function produces two variants of the conditioning plots discussed in the 
+# reference below.
+
+?dotchart()
+# Draw a Cleveland dot plot.
+
+?stripchart()
+# stripchart produces one dimensional scatter plots (or dot plots) of the given 
+# data. These plots are a good alternative to boxplots when sample sizes are small.
+
+?image()
+# Creates a grid of colored or gray-scale rectangles with colors corresponding to 
+# the values in z. This can be used to display three-dimensional or spatial data 
+# aka images. This is a generic function.
+
+?contour()
+# Create a contour plot, or add contour lines to an existing plot.
+
 # 2. The air quality dataset was introduced in Lecture 1. Import it into R. This
 # and the subsequent tasks will do some analysis based on this dataset.
 #
