@@ -32,9 +32,9 @@ for(i in 1:nrow(iris)){
     }
     
     if(i == nrow(iris)){
-        write.csv(setosa, 'setosa.csv')
-        write.csv(versicolor, 'versicolor.csv')
-        write.csv(virginica, 'virginica.csv')
+        write.csv(setosa, 'Data/setosa.csv', row.names = FALSE)
+        write.csv(versicolor, 'Data/versicolor.csv', row.names = FALSE)
+        write.csv(virginica, 'Data/virginica.csv', row.names = FALSE)
     }
 }
 

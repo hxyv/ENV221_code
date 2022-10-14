@@ -1,3 +1,5 @@
+library(ggplot2)
+library(GGally)
 # 1. What are the following functions used for? Create a table with the function 
 # names as one column and the function usage as another.
 # https://stackoverflow.com/questions/9192589/how-can-i-extract-text-from-rs-help-command
@@ -70,24 +72,24 @@ extract_help("graphics", "hist")
 # 2.1 Make a boxplot of the early afternoon ozone concentration in June.
 boxplot(airquality[airquality$Month == 6, 1],
         main = "Boxplot of the early afternoon ozone concentration in June",
-        ylab = "Ozone Concentration")
+        ylab = "Ozone Concentration (ppb)")
 
 ozone_boxplot <- ggplot(airquality[airquality$Month == 6,]) + 
     geom_boxplot(aes(Ozone)) +
     labs(title = "Boxplot of the early afternoon ozone concentration in June",
-         x ="Ozone Concentration")
+         x ="Ozone Concentration (ppb)")
 
 ozone_boxplot
 
 # 2.2 Make a histogram of the early afternoon ozone concentration in June.
 hist(airquality[airquality$Month == 6, 1],
      main = "Histogram of the early afternoon ozone concentration in June",
-     xlab = "Ozone Concentration")
+     xlab = "Ozone Concentration (ppb)")
 
 ozone_histogram <- ggplot(airquality[airquality$Month == 6,]) +
     geom_histogram(aes(Ozone)) +
     labs(title = "Histogram of the ealy afternoon ozone concentration in June",
-         x = "Ozone Concentration", 
+         x = "Ozone Concentration (ppb)", 
          y = "Frequency")
 
 ozone_histogram
@@ -95,7 +97,6 @@ ozone_histogram
 # 2.3 Check the components of these figures. Complete them if missing. Beautify them.
 
 # 2.4 Save the boxplot and histogram as .pdf files.
-library(GGally)
 ggsave("Ozone_boxplot.pdf", ozone_boxplot, path = 'Graphs')
 ggsave("Ozone_histrogram.pdf", ozone_histogram, path = 'Graphs')
 

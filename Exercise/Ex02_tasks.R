@@ -15,7 +15,7 @@ exp_y(3.2, 98, 200)
 # this dataset.
 #
 # 3.1 How many rows and columns does this data frame have?
-df_aq <- read.csv("airquality.csv")
+df_aq <- read.csv("Data/airquality.csv")
 cat("Numbers of rows: ", nrow(df_aq))
 cat("Numbers of columns: ", ncol(df_aq))
 
@@ -39,7 +39,7 @@ Celsius <- round((df_aq$Temp - 32) / 1.8)
 df_aq$Celsius <- Celsius
 
 # 3.6 (Continued) Save the frame as a .csv file.
-write.csv(df_aq, "airquality_new.csv")
+write.csv(df_aq, "Data/airquality_new.csv", row.names = FALSE)
 
 # The ENV211 Students dataset was introduced in Week 1. Download it from LMO and
 # import it into R. This and the subsequent tasks will do some analysis based on
@@ -78,4 +78,4 @@ BMI <- round(stud$WEIGHT / (stud$HEIGHT / 100) ^ 2, 1)
 stud$BMI <- BMI
 
 # 4.6 （Continued) Save the data frame as a .csv file.
-write.csv(stud, "students_ENV221_new.csv")
+write.csv(stud, "Data/students_ENV221_new.csv", row.names = FALSE)
