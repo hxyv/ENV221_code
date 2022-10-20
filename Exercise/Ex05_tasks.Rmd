@@ -1,0 +1,112 @@
+---
+title: "Ex05_tasks"
+output: html_notebook
+---
+
+1.  The U.S. Department of Energy conducts weekly surveys of approximately 800 gasoline stations to determine the average price per gallon of regular gasoline. On December 10, 2012, the average price was \$3.35 per gallon. Identify the population and the sample.
+
+-   **Population:** The price per gallon of regular gasoline of all of the gasoline stations in U.S. on December 10, 2012.
+-   **Sample:** The price per gallon of regular gasoline of the approximately 800 gasoline stations on December 10, 2012.
+
+---
+
+2. Simulate the Law of Large Numbers with the experiment of rolling a die (i.e. use the sample() function to simulate the experiment of rolling a die many times and calculate the probability of getting a certain side of the die.
+
+```{r}
+p_die <- function(side, times = 100){
+    library(ggplot2)
+    x <- sample(1:6, times, replace = TRUE)
+    y <- rep(0, times)
+    count <- 0
+    for(i in 1:times){
+        if(x[i] == side){
+            count <- count + 1
+            y[i] <- count
+        }else{
+            y[i] <- count
+        }
+    }
+    e_die <- data.frame(n = 1:times, x, y)
+    e_die$p <- e_die$y / e_die$n
+    ggplot(e_die) +
+        geom_point(aes(n, p)) +
+        lims(y = c(0, 1)) +
+        geom_hline(yintercept = 1 / 6, color = 'red')
+}
+p_die(side = 1, times = 1000)
+```
+
+---
+
+3. The Air Quality dataset was introduced in Lecture 1. Import it into R. This and the subsequent tasks will do some analysis based on this dataset.
+    
+a. Identify the type of each column in the dataset with nominal, ordinal, descrete, or continous data.
+
+```{r}
+str(airquality)
+```
+    
+- **Ozone:** Continous data
+- **Solar.R:** Continuous data
+- **Wind:** Ordinal data
+- **Temp:** Continuous data
+- **Month:** Ordinal data
+- **Day:** Ordinal data
+
+---
+
+b. Add a new column ""Month_English"" as the month in English. What is the data type of the new column?
+
+```{r}
+airquality$Month_English <- ifelse(airquality$Month == 1, "January",
+                                ifelse(airquality$Month == 2, "February",
+                                ifelse(airquality$Month == 3, "Match",
+                                ifelse(airquality$Month == 4, "April",
+                                ifelse(airquality$Month == 5, "May",
+                                ifelse(airquality$Month == 6, "June",
+                                ifelse(airquality$Month == 7, "July",
+                                ifelse(airquality$Month == 8, "August",
+                                ifelse(airquality$Month == 9, "September",
+                                ifelse(airquality$Month == 10, "October",
+                                ifelse(airquality$Month == 11, "November", "December")))))))))))
+
+airquality[, c("Month", "Month_English")]
+```
+
+- **Month_English:** Nominal data
+
+---
+
+4. The ENV221 Students dataset was introduced in Lecture 2. Import it into R. This and the subsequent tasks will do some analysis based on this dataset. 
+
+a. Identify the type of each column in the dataset with nominal, ordinal, descrete, or continous data.
+
+```{r}
+stud <- read.csv("../Data/students_ENV221.csv")
+str(stud)
+```
+
+- **ID:** Nominal data
+- **GENDER:** Nominal data
+- **YEAR:** Descrete data
+- **HEIGHT:** Continuous data
+- **WEIGHT:** Continuous data
+- **SHOE:** Descrete data
+- **HOME:** Nominal data
+- **MTH:** Descrete data
+- **STAT:** Nominal data
+- **R:** Nominal data
+
+---
+
+b. Add a new column ""R_level"", showing the R level of each students with integers from 1 to 5. What is the data type of the new column?
+
+```{r}
+stud$R_level <- ifelse(stud$R == "1. I know nothing about it.", 1,
+                       ifelse(stud$R == "2. I know a little about it.", 2,
+                       ifelse(stud$R == "3. I know some about it.", 3,
+                       ifelse(stud$R == "4. I know a lot about it.", 4, 5))))
+stud[, c("R", "R_level")]
+```
+
+- **R_level:** Ordinal data
