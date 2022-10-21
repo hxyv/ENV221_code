@@ -1,12 +1,18 @@
 ---
 title: "Ex05_tasks"
-output: html_notebook
+author: "Xingyu.Hu"
+date: "2022-10-21"
+output: html_document
 ---
 
-1.  The U.S. Department of Energy conducts weekly surveys of approximately 800 gasoline stations to determine the average price per gallon of regular gasoline. On December 10, 2012, the average price was \$3.35 per gallon. Identify the population and the sample.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
--   **Population:** The price per gallon of regular gasoline of all of the gasoline stations in U.S. on December 10, 2012.
--   **Sample:** The price per gallon of regular gasoline of the approximately 800 gasoline stations on December 10, 2012.
+1. The U.S. Department of Energy conducts weekly surveys of approximately 800 gasoline stations to determine the average price per gallon of regular gasoline. On December 10, 2012, the average price was \$3.35 per gallon. Identify the population and the sample.
+
+- **Population:** The price per gallon of regular gasoline of all of the gasoline stations in U.S. on December 10, 2012.
+- **Sample:** The price per gallon of regular gasoline of the approximately 800 gasoline stations on December 10, 2012.
 
 ---
 
@@ -16,18 +22,10 @@ output: html_notebook
 p_die <- function(side, times = 100){
     library(ggplot2)
     x <- sample(1:6, times, replace = TRUE)
-    y <- rep(0, times)
-    count <- 0
-    for(i in 1:times){
-        if(x[i] == side){
-            count <- count + 1
-            y[i] <- count
-        }else{
-            y[i] <- count
-        }
-    }
+    y <- cumsum(x == side)
     e_die <- data.frame(n = 1:times, x, y)
     e_die$p <- e_die$y / e_die$n
+    
     ggplot(e_die) +
         geom_point(aes(n, p)) +
         lims(y = c(0, 1)) +
@@ -70,7 +68,7 @@ airquality$Month_English <- ifelse(airquality$Month == 1, "January",
                                 ifelse(airquality$Month == 10, "October",
                                 ifelse(airquality$Month == 11, "November", "December")))))))))))
 
-airquality[, c("Month", "Month_English")]
+head(airquality[, c("Month", "Month_English")])
 ```
 
 - **Month_English:** Nominal data
@@ -106,7 +104,7 @@ stud$R_level <- ifelse(stud$R == "1. I know nothing about it.", 1,
                        ifelse(stud$R == "2. I know a little about it.", 2,
                        ifelse(stud$R == "3. I know some about it.", 3,
                        ifelse(stud$R == "4. I know a lot about it.", 4, 5))))
-stud[, c("R", "R_level")]
+head(stud[, c("R", "R_level")])
 ```
 
 - **R_level:** Ordinal data

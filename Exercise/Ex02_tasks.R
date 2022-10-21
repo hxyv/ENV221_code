@@ -46,7 +46,7 @@ write.csv(df_aq, "Data/airquality_new.csv", row.names = FALSE)
 # this dataset.
 #
 # 4.1 How many rows and columns does this data frame have?
-stud <- read.csv("students_env221.csv")
+stud <- read.csv("Data/students_env221.csv")
 cat("Numbers of rows: ", nrow(stud))
 cat("Numbers of columns: ", ncol(stud))
 
