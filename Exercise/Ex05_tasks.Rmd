@@ -56,18 +56,7 @@ str(airquality)
 b. Add a new column ""Month_English"" as the month in English. What is the data type of the new column?
 
 ```{r}
-airquality$Month_English <- ifelse(airquality$Month == 1, "January",
-                                ifelse(airquality$Month == 2, "February",
-                                ifelse(airquality$Month == 3, "Match",
-                                ifelse(airquality$Month == 4, "April",
-                                ifelse(airquality$Month == 5, "May",
-                                ifelse(airquality$Month == 6, "June",
-                                ifelse(airquality$Month == 7, "July",
-                                ifelse(airquality$Month == 8, "August",
-                                ifelse(airquality$Month == 9, "September",
-                                ifelse(airquality$Month == 10, "October",
-                                ifelse(airquality$Month == 11, "November", "December")))))))))))
-
+airquality$Month_English <- month.abb[airquality$Month]
 head(airquality[, c("Month", "Month_English")])
 ```
 
@@ -92,8 +81,8 @@ str(stud)
 - **SHOE:** Descrete data
 - **HOME:** Nominal data
 - **MTH:** Descrete data
-- **STAT:** Nominal data
-- **R:** Nominal data
+- **STAT:** Ordinal data
+- **R:** Ordinal data
 
 ---
 
@@ -105,6 +94,8 @@ stud$R_level <- ifelse(stud$R == "1. I know nothing about it.", 1,
                        ifelse(stud$R == "3. I know some about it.", 3,
                        ifelse(stud$R == "4. I know a lot about it.", 4, 5))))
 head(stud[, c("R", "R_level")])
+
+# stud$r_lev <- as.integer(substr(stud$R, 1, 1))
 ```
 
 - **R_level:** Ordinal data
