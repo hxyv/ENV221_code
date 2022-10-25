@@ -1,0 +1,28 @@
+# Quiz 6
+
+---
+
+1. A survey of 8027 U.S. adults found that 14% percent would "definitely" buy or lease an eletric-only vehicle if they were to buy a vehicle today. Determine wheher the numerical value (14%) is a parameter or a statistic. Explain your reasoning.
+
+- Statistic. The value 14% is a numerical description of a sample of U.S. adults.
+
+---
+
+2. Emily collected some water samples from the Taihu Lake and measured the pH value. Determine the level of measurement of the pH value. Explain your reasoning.
+
+- Intervval. Because meaningful differences between pH values can be calculated but a zero value of pH is not an inheret zero.
+
+---
+
+3. Emily wants to know how people feel about air pollution. She goes to the Dushuhu Hospital and ask people there. Identify the sampling technique used in her study. Explain your reasoning.
+
+- Conveneience sampling. Because all of the people sampled are in one convenient location.
+
+---
+
+4. The column "month" in the R dataset "airquality" is displayed as numeric data. Give the R code for convertig this column into categorical data as the English names of months (i.e. January to December)
+
+```{r}
+head(month.name[airquality$Month])
+```
+
