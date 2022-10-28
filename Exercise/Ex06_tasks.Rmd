@@ -1,0 +1,87 @@
+---
+title: "Ex06_tasks"
+author: "Xingyu.Hu"
+date: "2022-10-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The airquality dataset was introduced in Lecture 1. Import it into R. This and the subsequent tasks will do some analysis based on this dataset.
+
+1. Describe the wind speed (in km/hour) with the center, spread and shape.
+
+```{r}
+# Center
+summary(airquality$Wind)
+# Spread
+range(airquality$Wind)
+var(airquality$Wind)
+sd(airquality$Wind)
+# Shape
+library(e1071)
+skewness(airquality$Wind)
+kurtosis(airquality$Wind)
+```
+
+- Positively Skewed
+
+---
+
+2. Draw a strip chart, a histogram, a box plot, and a violin plot for all the observations of wind speed. Are there outliers? How do you know it? If there are, what time was it when they happened?
+
+```{r}
+stripchart(airquality$Wind, method = "jitter", jitter = 0.1)
+boxplot(airquality$Wind)
+
+library(ggplot2)
+ggplot(airquality, aes(x = as.character(Month), y = Wind)) +
+    geom_violin() +
+    geom_boxplot(width = 0.1)
+
+IQR(airquality$Wind)
+outlierQ1 <- 7.4 - 1.5 * 4.1
+outlierQ3 <- 11.5 + 1.5 * 4.1
+airquality[airquality$Wind > outlierQ3 | airquality$Wind < outlierQ1,]
+
+```
+
+- From the box plot, three outliers can be found.
+
+---
+
+3. Give each wind speed observation an international description.
+
+```{r}
+airquality$Wind_desc <- ifelse(airquality$Wind < 1, "Calm",
+                        ifelse(airquality$Wind >= 1 & airquality$Wind < 6, "Light Air",
+                        ifelse(airquality$Wind >= 6 & airquality$Wind < 12, "Light Breeze",
+                        ifelse(airquality$Wind >= 12 & airquality$Wind < 20, "Gentle Breeze",
+                        ifelse(airquality$Wind >= 20 & airquality$Wind < 29, "Moderate Breeze",
+                        ifelse(airquality$Wind >= 29 & airquality$Wind < 39, "Fresh Breeze",
+                        ifelse(airquality$Wind >= 39 & airquality$Wind < 50, "Strong gale",
+                        ifelse(airquality$Wind >= 50 & airquality$Wind < 62, "Fresh Breeze",
+                        ifelse(airquality$Wind >= 62 & airquality$Wind < 75, "Fresh gale",
+                        ifelse(airquality$Wind >= 75 & airquality$Wind < 89, "Stong gale",
+                        ifelse(airquality$Wind >= 89 & airquality$Wind < 103, "Whole gale",
+                        ifelse(airquality$Wind >= 103 & airquality$Wind < 117, "Storm", "Hurricane"))))))))))))
+```
+
+---
+
+4. Draw a pie chart for the frequency of the wind description.
+
+```{r}
+pie(table(airquality$Wind_desc))
+```
+---
+
+5. Make a contingency table for the wind description and the month. How many observations of Modern Breeze can you find in July?
+
+```{r}
+table(airquality$Wind_desc, airquality$Month)
+```
+
+- 0 "Modern Breeze" in July.

@@ -1,0 +1,58 @@
+---
+title: "Quiz7"
+author: "Xingyu.Hu"
+date: "2022-10-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+--- 
+
+1. The data set "Total.P.df" in the R package "EnvStats" represents the monthly estimated total phosphorus mass (mg) within a water column at two different stations (i.e. CB3.1 and CB3.3e) for the 5-year time period October 1984 to September 1989 from a study on phosphorus concentration conducted in the Chesapeake Bay. Construct a frequency distribution table for the total phosphorus at CB3.1 using five bins. The table must include class limits, midpoints, frequencyies, relative frequencies and cumulative frequencies.
+
+```{r}
+data(package = 'EnvStats')
+library(EnvStats)
+
+freq <- hist(Total.P.df$CB3.1, plot = FALSE, nclass = 5)
+dtf_freq <- data.frame(Class = paste0(freq$breaks[-length(freq$breaks)] + 0.1, ' - ', freq$breaks[-1]),
+                       Frequency = freq$counts,
+                       Midpoint = freq$mids + 0.05)
+dtf_freq$Relative_frequency <- round(dtf_freq$Frequency / length(iris$Sepal.Length), 3)
+dtf_freq$Cumulative_frequency <- cumsum(dtf_freq$Relative_frequency)
+dtf_freq
+```
+
+---
+
+2. Describe the skewness of the distribution for the same data in the previous question (i.e. the total phosphorus mass at CB3.1): what is the skewness value? Is it symmetric, skewed left, or skewed right?
+
+```{r}
+summary(Total.P.df$CB3.1)
+library(e1071)
+skewness(Total.P.df$CB3.1)
+```
+- Skewness: 0.6610141
+- Skewed Right
+
+---
+
+3. Give the R code for calculating the interquartile range of the data in the previous question (i.e. the total phosphorus mass at CB3.1).
+
+```{r}
+IQR(Total.P.df$CB3.1)
+```
+
+---
+
+4. Give the R code for drawing a box plot of the total phosphorus mass at CB3.1 for each year.
+
+```{r}
+boxplot(Total.P.df$CB3.1 ~ Total.P.df$Year,
+        ylab = "Total phosphorus mass (mg)",
+        xlab = "Year")
+```
+
