@@ -1,0 +1,116 @@
+---
+title: "Ex07_tasks"
+author: "Xingyu.Hu"
+date: "2022-11-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+In an experimental pond, there are three species of fish, named as A, B, and C, with the quantity of 1000 for each. The lengths of them are 1 cm, 2 cm, and 3 cm, respectively. Each fish has the equal opportunity to be taken in a random sample. This and the subsequent tasks will do some analysis based on this dataset.
+
+1. What is the distribution of all the fishes' length as the population? Plot a histogram. Give the population mean and standard deviation for the length.
+
+```{r}
+species <- rep(c('A', 'B', 'C'), times = c(1000, 1000, 1000))
+length <- rep(c(1, 2, 3), times = c(1000, 1000, 1000))
+fish <- data.frame(species, length)
+
+hist(fish$length)
+mean(fish$length)
+sd(fish$length * sqrt(nrow(fish)-1 / nrow(fish)))
+```
+
+---
+
+2. You randomly select a sample of 3 fishes from the population and you record the lengths of them (e.g. 1 cm, 1 cm, 3 cm) and calculate the mean (e.g. 5/3 = 1.67 cm)
+
+- How many possible samples could you get?
+- List all possible samples (e.g. 1, 1, 1; 1, 1, 2; 1, 1, 3; ...) in a table
+- Show the sample distribution of the mean in a table and in a histogram.
+- Calculate the standard error of the mean according to the population mean and sample size. Compare it with the standard deviation of the sample distribution of the mean.
+
+```{r}
+choose(3000,3)
+# answer: 4495501000   
+
+samplen <- replicate(100, sample(length, 3))
+sample_mean <- apply(samplen, 2, mean)
+hist(sample_mean, freq = FALSE)
+
+se <- sd(sample_mean) * sqrt((100 - 1) / 100)
+se
+sd(sample_mean)
+```
+
+---
+
+3. What is the probability of sampling 3 fishes with a mean length > 1.67 cm?
+
+```{r}
+p1 <- pnorm(1.67, mean = mean(samplen), sd = se)
+p <- 1-p1
+p
+```
+
+4. You randomly select a sample of 30 fishes from the population and you record the lengths of them and calculate the mean.
+
+- How many possible samples could you get?
+- Show the (approximate) sample distribution of the mean in a histogram.
+- Calculate the standard error of the mean according to the population mean and sample size. Compare it with the standard deviation of the sample distribution of the mean.
+
+```{r}
+choose(3000,30)
+# answer:6.711158e+71
+
+samplen <- replicate(100, sample(fish$length, 30))
+sample_mean <- apply(samplen, 2, mean)
+hist(sample_mean, freq = FALSE)
+
+se<-sd(sample_mean) * sqrt((100 - 1) / 100)
+se
+sd(sample_mean)
+```
+
+---
+
+5. What is the probability of sampling 30 fishes with a mean length > 1.67 cm?
+
+```{r}
+p1 <- pnorm(1.67, mean = mean(samplen), sd = se)
+p <- 1-p1
+p
+```
+
+---
+
+Download the data file twopeasks.csv from the Learning Mall. We assume it is the population of a certain environmental variable. This and the subsequent tasks will do some analysis based on this dataset.
+
+6. Plot a histogram of this variable. It is a normal distribution? Why?
+
+```{r}
+twopeaks <- read.csv("Data/twopeaks.csv")
+hist(twopeaks$data, 
+     las = 1, freq = FALSE)
+# No, mean is not equal mediean.
+```
+
+---
+
+7. You randomly select a sample from the population. If the sample size is 3, how many possible samples could you get? Show the (approximate) sample distribution of the mean in a histogram. Is it a normal distribution? Why?
+
+```{r}
+choose(20000,3)
+# answer:1.333133e+12
+
+samplen <- replicate(500, sample(twopeaks$data, 3))
+sample_mean <- apply(samplen, 2, mean)
+hist(sample_mean, freq = FALSE)
+
+# No, it has multiple peaks.
+```
+

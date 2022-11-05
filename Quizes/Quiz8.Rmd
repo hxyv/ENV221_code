@@ -1,0 +1,51 @@
+---
+title: "Quiz8"
+author: "Xingyu.Hu"
+date: "2022-11-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+1. The measurements in a certain region shows the mean CO2 is 421 ppm with a standard deviation of 15 ppm. It follows the normal distribution. Using the Empirical Rule. Between what two concentration do 95% of the measurements fall?
+
+```{r}
+c(qnorm(c(0.025, 0.975), 421, 15))
+```
+
+---
+
+2. What is the probability P(-1.5 < z < 1.2) using the standard normal distribution?
+
+```{r}
+0.8849 - 0.0668
+```
+
+---
+
+3. During a certain week, the mean price of gasoline in Suzhou was 8.80 CNY per liter. A random sample of 37 gas station is selected. What is the probability that the mean price for the smaple was between 8.60 CNY and 8.90 CNY that week? Assume $\sigma$ = 0.30 CNY. Round the probability to 0.01%.
+
+```{r}
+sigma <- 0.3 / sqrt(37)
+p1 <- pnorm(8.6, 8.8, sigma)
+p2 <- pnorm(8.9, 8.8, sigma)
+p2 - p1
+```
+
+---
+
+4. In a survey of 1022 U.S. adults, 779 think the United States should put more emphasis on producing domestic energy from solar power. Construct a 90% confidence interval for the population proportion.
+
+```{r}
+zc <- 1.645
+x <- 779
+n <- 1022
+p <- x / n
+E <- zc * sqrt(p * (1 - p) / n)
+c(p - E, p + E)
+```
+
