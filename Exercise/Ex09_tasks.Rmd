@@ -1,0 +1,17 @@
+---
+title: "Untitled"
+author: "Xingyu.Hu"
+date: "2022-11-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Trichloroethelene (TCE) is reported by the EPA to be the most prevalent solvent contaminating groundwater at superfund sites in the United States. Exposure can result in effect to the immune and reproductive systems, liver, kidneys, central nervous system, and may affect fetal development during pregnancy. Long term exposures to TCE can increase the risk of kidney cancer. There is also evidence that TCE exposure can increase the risk for non-Hodgkin's lymphoma and liver cancer.
+
+The "tce" dataset shows the TCE concentrations (mg/L) at **10** randomly selected groundwater monitoring wells before remediation and the same wells after remediation. Download the tce.csv file from the Learning Mall. This and the subsequent tasks will do some analysis based on this dataset.
+
+1. Give the reproducible R codes for producing a box plot, which shows the first, second, and third quartiles of the TCE concentration in the ground water before and after remediation, respectively.
+

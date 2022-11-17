@@ -1,0 +1,61 @@
+---
+title: "Ex07_tasks"
+author: "Xingyu.Hu"
+date: "2022-11-010"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+Nitrogen dioxide is generally considered a useful indicator for measuring and judging air pollution stemming from motor vehicle sources. A scientist estimates that the mean nitrogen dioxide in this city is equal to 28 ppb. You determine the nitrogen dioxide levels for 34 randomly selected days. The results (in ppb) are: 24, 36, 44, 35, 44, 34, 29, 40, 39, 43, 41, 32, 33, 29, 29, 43, 25, 39, 25, 42, 29, 22, 22, 25, 14, 15, 14, 29, 25, 27, 22, 24, 18, 17. Assume the population standard deviation is 9 ppb. This and the subsequent tasks will do some analysis based on this dataset.
+
+1. Give the reproducible R codes for producing a histogram for the sampled nitrogen dioxide concentration. (Tips: Proper bars. Correct labels. Elegant layout.)
+
+```{r}
+x <- c(24,36,44,35,44,34,29,40,39,43,41,32,33,29,29,43,25,39,25,42,29,22,22,25,14,15,14,29,25,27,22,24,18,17)
+
+library(ggplot2)
+ggplot() +
+    geom_histogram(aes(x), binwidth = 1, color = "white") +
+    labs(x = "Daily nitrogen dioxide concentration (ppb)",
+         y = "Frequence") +
+    theme_classic()
+```
+
+---
+
+2. You want to see if your data support the scientist's estimate. What hypothesis test should you choose? (Tip: The name of the hypothesis is test)
+
+- **Two-tailed z-test**
+
+---
+
+3. What are your null hypothesis and alternative hypothesis for testing whether the mean nitrogen dioxide in this city is equal to 28 ppb? (Tip: The null hypothesis. The alternative hypothesis)
+
+- $H_0:\mu=28$
+- $H_1:\mu\neq28$
+
+---
+
+4. What is your conclusion for testing whether the mean nitrogen dioxide in this city is equal to 28 ppb? Conclude it at the significance level of $\alpha=0.05$. (Tips: The test statistic. The critical value. The p-value. The final conclusion.)
+
+```{r}
+# Calculate the test statistic:
+mu <- 28
+sigma <- 9
+mu_xbar <- mean(x)
+n <- 34
+se <- sigma / sqrt(n)
+
+z_score <- (mu_xbar - mu) / se
+z_critical <- c(qnorm(0.025), qnorm(1 - 0.025))
+z_critical1 <- qnorm(0.05/2, lower.tail = FALSE)
+?qnorm
+```
+
+- **Conclusion:** Fail to reject the $H_0$. The evidence is not sufficient to reject the claim. The mean concentration of NO2 is equal to 28 ppb.
+
