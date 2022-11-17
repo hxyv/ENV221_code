@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Ex09_tasks"
 author: "Xingyu.Hu"
 date: "2022-11-17"
 output: html_document
@@ -14,4 +14,91 @@ Trichloroethelene (TCE) is reported by the EPA to be the most prevalent solvent 
 The "tce" dataset shows the TCE concentrations (mg/L) at **10** randomly selected groundwater monitoring wells before remediation and the same wells after remediation. Download the tce.csv file from the Learning Mall. This and the subsequent tasks will do some analysis based on this dataset.
 
 1. Give the reproducible R codes for producing a box plot, which shows the first, second, and third quartiles of the TCE concentration in the ground water before and after remediation, respectively.
+
+```{r}
+library(ggplot2)
+tce <- read.csv("../Data/tce.csv")
+ggplot(tce) +
+    geom_boxplot(aes(y = TCE.mg.per.L, x = Period)) +
+    theme_classic()
+```
+
+---
+
+2. You want to know whether the remediation has effect on the groundwater regarding the TCE concentration. What hypothesis test should you choose? RUBRIC: The name of the hypothesis test.
+
+- **Paired t-test**
+
+---
+
+3. What are your null hypothesis and alternative hypothesis for testing **whether the remediation has effect on the groundwater regarding the TCE concentration**? RUBRIC: The null hypothesis. The alternative hypothesis.
+
+- $H_0:\mu_{diff}\le0$
+- $H_1:\mu_{diff}>0$
+
+---
+
+4. What is your cnclusion for testing whether the remediation has effct on the groundwater regarding the TCE concentration? Conclude it at the significance level of $\alpha=0.05$. RUBRIC: The test statistic. The critical value. The p-value. The final conclusion.
+
+```{r}
+# Collect data
+tce2 <- data.frame(
+    well = 1:10,
+    before = tce[tce$Period == "Before", 1],
+    after = tce[tce$Period == "After", 1], 
+    row.names = NULL)
+tce2$diff <- tce2$before - tce2$after
+
+# Calculate a test statistic
+
+d_bar <- mean(tce2$diff)
+mu_d <- 0
+s_d <- sd(tce2$diff) / sqrt(nrow(tce2))
+t_score <- (d_bar - mu_d) / s_d
+t_score
+t_critical <- qt(0.95, df = nrow(tce2) - 1)
+t_critical
+```
+
+- **Decision:** As $t_{score}>t_{critical}$, we can reject $H_0$ at $\alpha=0.05$.
+
+- **Conclusion:** The remediation has effect on the groundwater regarding the TCE concentration.
+
+---
+
+A researcher claims that the mean concentration of lead (Pb) in the sediment is 0.16 mg/L. No evidence shows the Pb concentration follows the normal distribution. You collected 11 random sediment samples to test this claim. The **sample mean concentration of Pb is 0.23 mg/L** and **standard deviation is 0.03 mg/L**. This and the subsequent tasks will do some analysis based on this data.
+
+1. You want test the claim that **the mean Pb concentration is 0.16 mg/L**. What hypothesis test should you choose? RUBRIC: The name of the hypothesis test.
+
+- **Two-tailed t-test**
+
+---
+
+2. What are your null hypothesis and alternative hypothesis for testing whether the mean Pb concentration is 0.16 mg/L? RUBRIC: The null hypothesis. The alternative hypothesis.
+
+- $H_0:\mu=0.16$
+- $H_1:\mu\ne0.16$
+
+---
+
+3. What is your conclusion for testing whether the mean Pb concentration is 0.16 mg/L? Conclude it at the significance level of $\alpha=0.01$. RUBRIC: The test statistic. The critical value. The p-value. The final conclusion.
+
+```{r}
+# Gather data
+mu <- 0.16
+xbar <- 0.23
+sdv <- 0.03
+n <- 11
+
+# Calculate a test statistic
+t_score <- (xbar - mu) / (sdv / sqrt(n))
+t_score
+t_critical <- qt(c(0.005, 0.995), df = n - 1)
+t_critical
+```
+
+- **Decision:** As $t_{score}>t_{critical}$, we can reject $H_0$ at $\alpha=0.01$.
+- **Conclusion:** The mean Pb concentration is not 0.16 mg/L.
+
+
 
