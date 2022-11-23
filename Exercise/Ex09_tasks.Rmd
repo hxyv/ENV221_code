@@ -20,6 +20,7 @@ library(ggplot2)
 tce <- read.csv("../Data/tce.csv")
 ggplot(tce) +
     geom_boxplot(aes(y = TCE.mg.per.L, x = Period)) +
+     ylab(label = "TCE Concentration (mg/L)") +
     theme_classic()
 ```
 
@@ -27,7 +28,7 @@ ggplot(tce) +
 
 2. You want to know whether the remediation has effect on the groundwater regarding the TCE concentration. What hypothesis test should you choose? RUBRIC: The name of the hypothesis test.
 
-- **Paired t-test**
+- **Two-sample paired t-test**
 
 ---
 
@@ -45,12 +46,10 @@ ggplot(tce) +
 tce2 <- data.frame(
     well = 1:10,
     before = tce[tce$Period == "Before", 1],
-    after = tce[tce$Period == "After", 1], 
-    row.names = NULL)
+    after = tce[tce$Period == "After", 1])
 tce2$diff <- tce2$before - tce2$after
 
 # Calculate a test statistic
-
 d_bar <- mean(tce2$diff)
 mu_d <- 0
 s_d <- sd(tce2$diff) / sqrt(nrow(tce2))
@@ -58,6 +57,8 @@ t_score <- (d_bar - mu_d) / s_d
 t_score
 t_critical <- qt(0.95, df = nrow(tce2) - 1)
 t_critical
+p_value <- pt(t_score, df = nrow(tce2) - 1, lower.tail = FALSE)
+p_value
 ```
 
 - **Decision:** As $t_{score}>t_{critical}$, we can reject $H_0$ at $\alpha=0.05$.
@@ -66,11 +67,11 @@ t_critical
 
 ---
 
-A researcher claims that the mean concentration of lead (Pb) in the sediment is 0.16 mg/L. No evidence shows the Pb concentration follows the normal distribution. You collected 11 random sediment samples to test this claim. The **sample mean concentration of Pb is 0.23 mg/L** and **standard deviation is 0.03 mg/L**. This and the subsequent tasks will do some analysis based on this data.
+A researcher claims that the mean concentration of lead (Pb) in the sediment is 0.16 mg/L. No evidence shows the Pb concentration follows the normal distribution. You collected **11 random sediment samples** to test this claim. The **sample mean concentration of Pb is 0.23 mg/L** and **standard deviation is 0.03 mg/L**. This and the subsequent tasks will do some analysis based on this data.
 
 1. You want test the claim that **the mean Pb concentration is 0.16 mg/L**. What hypothesis test should you choose? RUBRIC: The name of the hypothesis test.
 
-- **Two-tailed t-test**
+- **One-sample two-tailed t-test**
 
 ---
 
@@ -95,6 +96,8 @@ t_score <- (xbar - mu) / (sdv / sqrt(n))
 t_score
 t_critical <- qt(c(0.005, 0.995), df = n - 1)
 t_critical
+p_value <- pt(t_score, df = n - 1, lower.tail = FALSE) * 2
+p_value
 ```
 
 - **Decision:** As $t_{score}>t_{critical}$, we can reject $H_0$ at $\alpha=0.01$.

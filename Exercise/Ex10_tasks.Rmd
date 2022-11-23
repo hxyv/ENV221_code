@@ -1,0 +1,222 @@
+---
+title: "Ex10_tasks"
+author: "Xingyu.Hu"
+date: "2022-11-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The Iris dataset was introduced in Lecture 1. Import it into R. This and the subsequent tasks will do some analysis based on this dataset.
+
+1. Give the reproducible R codes for constructing scatter plots of the sepal length against the width, and the petal length against the petal width, for each species separately, each with a simple linear-regression line.
+
+```{r message=FALSE}
+library(ggplot2)
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+    geom_point() + 
+    facet_wrap(~ Species, scales = 'free_x') +
+    geom_smooth(method='lm', formula = y ~ x) +
+    theme_classic()
+
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) +
+    geom_point() + 
+    facet_wrap(~ Species, scales = 'free_x') +
+    geom_smooth(method = 'lm', formula = y ~ x) +
+    theme_classic()
+```
+
+---
+
+2. Calculate the correlation coefficients between the sepal length and width, and the petal length and width for each species separtely, step by step.
+
+```{r message=FALSE}
+library(dplyr)
+mean_iris <- iris %>% group_by(Species) %>%
+    summarise(Sepal.Length = mean(Sepal.Length),
+              Sepal.Width = mean(Sepal.Width),
+              Petal.Length = mean(Petal.Length),
+              Petal.Width = mean(Petal.Width)) %>%
+    data.frame()
+
+sd_iris <- iris %>% group_by(Species) %>%
+    summarise(Sepal.Length = sd(Sepal.Length),
+              Sepal.Width = sd(Sepal.Width),
+              Petal.Length = sd(Petal.Length),
+              Petal.Width = sd(Petal.Width)) %>%
+    data.frame()
+
+cor_iris <- function(species = 'setosa', x = 'Sepal.Length', y = 'Sepal.Width'){
+    n <- 50
+    co <- 1 / (n - 1) * 
+        sum((iris[iris$Species == species, x] - mean_iris[mean_iris$Species == species, x]) * 
+                (iris[iris$Species == species, y] - mean_iris[mean_iris$Species == species, y]))
+    r <- co / (sd_iris[sd_iris$Species == species, x] * sd_iris[sd_iris$Species == species, y])
+}
+
+setosa_sepal <- cor_iris('setosa', 'Sepal.Length', 'Sepal.Width')
+setosa_petal <- cor_iris('setosa', 'Petal.Length', 'Petal.Width')
+versicolor_sepal <- cor_iris('versicolor', 'Sepal.Length', 'Sepal.Width')
+versicolor_petal <- cor_iris('versicolor', 'Petal.Length', 'Petal.Width')
+virginica_sepal <- cor_iris('virginica', 'Sepal.Length', 'Sepal.Width')
+virginica_petal <- cor_iris('virginica', 'Petal.Length', 'Petal.Width')
+
+cor <- data.frame(c(setosa_sepal, setosa_petal, versicolor_sepal, versicolor_petal, virginica_sepal, virginica_petal))
+colnames(cor) <- "correlation coefficient"
+rownames(cor) <- c("setosa_sepal", "setosa_petal", "versicolor_sepal", "versicolor_petal", "virginica_sepal", "virginica_petal")
+cor
+```
+
+---
+
+3. Are the correlation coefficients for the population zero? Do the hypothesis test step by step.
+
+- **Hypothesis:**
+    - $H_0:\rho=0$
+    - $H_1:\rho\ne0$
+    
+```{r}
+corp_test <- function(r = 1, n = 50){
+    t_score <- r * sqrt((n - 2) / (1 - r ^ 2))
+    t_critical <- qt(0.975, df = n - 2)
+    p <- pt(t_score, df = n - 2, lower.tail = FALSE) * 2
+    decision <- ifelse(p < 0.05, 'Reject H0', 'Fail to reject H0')
+    return(c(t_score, t_critical, p, decision))
+}
+
+iris_test <- sapply(cor[, 1], corp_test)
+rownames(iris_test) <- c("t_score", "t_critical", "p-value", "Decision")
+colnames(iris_test) <- c("setosa_sepal", "setosa_petal", "versicolor_sepal", "versicolor_petal", "virginica_sepal", "virginica_petal")
+iris_test
+```
+
+---
+
+A scientist assumes that the temperature (the explanatory variable) is a good predictor of plant height (the response variable), and the logarithm of the plant height linearly depends on the temperature. She collects a data set as Plant_height.csv. Download the dataset from LMO. This and the subsequent tasks will do some analysis based on this dataset.
+
+1. Make a scatter plot of the logarithm of the plant height (loght) against the temperature (temp). Heightlight the means.
+
+```{r}
+plant <- read.csv("../Data/Plant_height.csv")
+
+ggplot(plant, aes(x = temp, y = loght)) +
+    geom_point() +
+    geom_point(aes(x = mean(temp), y = mean(loght)), colour = "red", size = 2.5) +
+    labs(x = "Temperature", y = "Log(plant height)") +
+    theme_classic()
+```
+
+---
+
+2. Apply the simple linear regression model and get the intercept and slope for the regression line.
+
+```{r}
+mean_loght <- mean(plant$loght)
+mean_temp <- mean(plant$temp)
+
+b <- sum((plant$loght - mean_loght) * (plant$temp - mean_temp)) / 
+    sum((plant$temp - mean_temp) ^ 2)
+a <- mean_loght - b * mean_temp
+
+c(a, b)
+```
+
+---
+
+3. Do the hypothesis test about the fit step by step.
+
+- $H_0:$ There is no relationship between the height and the shoe size.
+- $H_1:$ There is relationship between the height and the shoe size.
+
+```{r}
+# Gather data
+dtf <- data.frame(loght = plant$loght, temp = plant$temp)
+dtf$predicated <- a + b * dtf$temp
+dtf$residual <- dtf$loght - dtf$predicated
+
+# Calculate a test statistic: F-test
+## df
+n <- nrow(dtf)
+dftot <- n - 1
+dfres <- n - 2
+dfreg <- 1
+
+## ss
+sstot <- sum((dtf$temp - mean_temp) ^ 2)
+ssres <- sum((dtf$loght - dtf$predicated) ^ 2)
+ssreg <- sum((dtf$predicated - mean_loght) ^ 2)
+
+## ms
+msreg <- ssreg / dfreg
+msres <- ssres / dfres
+
+## f
+f_score <- msreg / msres
+f_critical <- qf(0.05, df1 = dfreg, df2 = dfres, lower.tail = FALSE)
+p_value <- pf(f_score, df1 = dfreg, df2 = dfres, lower.tail = FALSE)
+c(f_score, f_critical, p_value)
+```
+
+- **Reject $H_0$. There is relationship between the temperature and tree height.**
+
+---
+
+4. Do the hypothesis test about the slope step by step.
+
+- $H_0:\beta=0.$ The slope of the regression line is zero. 
+- $H_1:\beta\ne0.$ The slop of the regression line is not zero.
+
+```{r}
+# Calculate a test statistic: t-test
+syx <- sqrt(sum(dtf$residual ^ 2) / (nrow(dtf) - 2))
+sx <- sd(dtf$temp)
+sb <- syx / (sx * sqrt(n - 1))
+beta <- 0
+
+t_score <- (b - beta) / sb
+t_critical <- qt(0.975, df = n - 1)
+p_value <- pt(t_score, df = n - 2, lower.tail = FALSE) * 2
+c(t_score, t_critical, p_value)
+```
+
+- **Reject $H_0$. The slope of the regression line is not equal to 0.**
+
+---
+
+5. Do the hypothesis test about the intercept step by step.
+
+- $H_0:\alpha=0.$ The intercept of the regression line is zero.
+- $H_1:\alpha\ne0.$ The intercept of the regression line is not zero.
+
+```{r}
+# Calculate a test statistic: t-test
+xbar <- mean_temp
+sa <- syx * sqrt(1 / n + xbar ^ 2 / ((n - 1) * sx ^ 2))
+alpha <- 0
+
+t_score <- (a - alpha) / sa
+t_critical <- qt(0.975, df = n -1)
+p_value <- pt(t_score, df = n - 2) *2
+c(t_score, t_critical, p_value)
+```
+
+- **Reject $H_0$. The intercept of the regression line is not equal to 0.**
+
+---
+
+6. Visualize the simple linear regression in the graph.
+
+```{r}
+ggplot(plant, aes(x = temp, y = loght)) +
+    geom_point() +
+    geom_smooth(method = 'lm', formula = y ~ x) +
+    geom_point(aes(x = mean(temp), y = mean(loght)), colour = "red", size = 2.5) +
+    labs(x = "Temperature", y = "Log(plant height)") +
+    theme_classic()
+```
+
+
+
+
