@@ -1,0 +1,206 @@
+---
+title: "Ex11_tasks"
+author: "Xingyu.Hu"
+date: ""
+output: 
+    html_document: 
+      theme: sandstone
+      highlight: pygments
+---
+```{css, echo=FALSE}
+.watch-out {
+  background-color: white;
+  border: 1px solid black;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(class.source = "watch-out")
+library(ggplot2)
+library(dplyr)
+library(readxl)
+```
+
+Water from three sources in Suzhou - Dushu Lake, Jinji Lake and control --- fed to Sprague-Dawley rats and the level of packed red blood cells after centrifugation (called the "haematocrit", HTC) was measured after 48 hours. You wonder if the haematocrit measurements are the same for all water sources. The results (in vol%) were as follows:
+
+- Control: 38, 40, 32, 36, 40, 40, 38, 40, 38, 40, 36, 40, 40, 35, 45
+- Dushu Lake: 56, 60, 50, 35, 40, 40, 55, 35
+- Jinji Lake: 40, 42, 38, 46, 36
+
+This and the subsequent tasks will do ANOVA based on this dataset.
+
+1. Give the reproducible R codes for producing a box plot, which shows the first, second, and third quartiles of the data for each group.
+
+```{r}
+htc <- data.frame(htc = c(38, 40, 32, 36, 40, 40, 38, 40, 38, 40, 36, 40, 40, 35, 45, 56, 60, 50, 35, 40, 40, 55, 35, 40, 42, 38, 46, 36), lake = rep(c("control", "dushu", "jinji"), times = c(15, 8, 5)))
+
+ggplot(htc, aes(x = lake, y = htc)) +
+    geom_boxplot() +
+    theme_classic() +
+    labs(x = "Lake Name", y = "HTC (vol%)")
+```
+
+---
+
+2. What are your null hypothesis and alternative hypothesis for ANOCA?
+
+- $H_0:\mu_1=\mu_2=\mu_3$
+- $H_1:$ at least one mean is different from others.
+
+---
+
+3. Calculate the within-group degree of freedom, the between-group degree of freedom, and the total degree of freedom.
+
+```{r}
+k <- 3
+n <- nrow(htc)
+dfw <- (n - k) %>% print()
+dfb <- (k - 1) %>% print()
+dft <- (n - 1) %>% print()
+```
+
+- Within-group df: 25
+- Between-group df: 2
+- Total df: 27
+
+---
+
+3. Calculate the within-group sum of squares, the between-group sum of squares, and the total sum of squares.
+
+```{r}
+# mean
+xbar <- mean(htc$htc)
+xibar <- htc %>%
+    group_by(lake) %>%
+    summarize(mean = mean(htc)) %>%
+    as.data.frame()
+
+# SS
+ssw1 <- sum((select(filter(htc, lake == "control"), htc) - xibar[1, 2]) ^ 2)
+ssw2 <- sum((select(filter(htc, lake == "dushu"), htc) - xibar[2, 2]) ^ 2)
+ssw3 <- sum((select(filter(htc, lake == "jinji"), htc) - xibar[3, 2]) ^ 2)
+ssw <- (ssw1 + ssw2 + ssw3) %>% print()
+
+ssb1 <- nrow(htc[htc$lake == "control",]) * (xibar[1, 2] - xbar) ^ 2
+ssb2 <- nrow(htc[htc$lake == "dushu",]) * (xibar[2, 2] - xbar) ^ 2
+ssb3 <- nrow(htc[htc$lake == "jinji",]) * (xibar[3, 2] - xbar) ^ 2
+ssb <- (ssb1 + ssb2 + ssb3) %>% print()
+
+## Double check
+sst <- (sum((htc$htc - xbar) ^ 2)) %>% print()
+ssw + ssb
+```
+
+- Within-group sum of square: 890.8083
+- Between-group sum of square: 323.8702
+- Total sum of square: 1214.679
+
+---
+
+4. What is your conclusion for ANOVA? Conclude it at the significant level of $\alpha=0.05$. RUBRIC The test statistic. The critical value. The p-value. The final conclusion.
+
+```{r}
+# Test statistic --- F score
+msw <- ssw / dfw
+msb <- ssb / dfb
+f_score <- (msb / msw) %>% print()
+f_critical <- qf(0.95, df1 = dfb, df2 = dfw) %>% print()
+qvalue <- pf(f_score, df1 = dfb, df2 = dfw, lower.tail = FALSE) %>% print()
+```
+
+- Test statistic: 4.544612
+- Critical value: 3.38519
+- P-value: 0.02072699
+- Conclusion: Reject $H_0$ at the significance level of $\alpha=0.05$. HTC measurements are not the same for all water sources.
+
+---
+
+A researcher studies the immune response to a particular antigen. Three different preparations of antigen are each administered to 10 subjects on three separate occasions and the antibody titre (arbitrary units) measured. You want to study if there is a difference between the values in three groups.
+
+Download the data file immune.xlsx from LMO. This and the subsequent tasks will do ANOVA based on this dataset.
+
+1. Give the reproducible R codes for producing a box plot, which shows the first, second, and third, quartiles of the data for each group. RUBRIC: The correct boxes. Correct labels. Elegant layout.
+
+```{r message=FALSE}
+immune <- read_excel("Data/immune.xlsx")
+colnames(immune) <- c("id", "g1", "g2", "g3")
+immune <- immune[-1, ]
+immune <- immune[, -1]
+immune_long <- stack(immune)
+colnames(immune_long) <- c("response", "group")
+    
+ggplot(immune_long, aes(x = group, y = response)) +
+    geom_boxplot() +
+    theme_classic()
+```
+
+---
+
+2. What are your null hypothesis and alternative hypothesis for your study?
+
+- $H_0:\mu_1=\mu_2=\mu_3$
+- $H_1:$ at least one mean is different from others.
+
+---
+
+3. Calculate the within-group degree of freedom, the between-group degree of freedom, and the total degree of freedom.
+
+```{r}
+k <- length(immune)
+n <- nrow(immune)
+dfw <- (n - k) %>% print()
+dfb <- (k - 1) %>% print()
+dft <- (n - 1) %>% print()
+```
+
+- Within-group df: 7
+- Between-group df: 2
+- Total df: 9
+
+---
+
+4. Calculate the within-group sum of squares, the between-group sum of squares, and total sum of squares.
+
+```{r}
+# mean
+xbar <- mean(immune_long$response)
+xibar <- colMeans(immune)
+
+# SS
+ssw1 <- sum((immune$g1 - xibar[1]) ^ 2) %>% as.numeric()
+ssw2 <- sum((immune$g2 - xibar[2]) ^ 2) %>% as.numeric()
+ssw3 <- sum((immune$g3 - xibar[3]) ^ 2) %>% as.numeric()
+ssw <- (ssw1 + ssw2 + ssw3) %>% print()
+
+ssb1 <- length(immune$g1) * (xibar[1] - xbar) ^ 2 %>% as.numeric()
+ssb2 <- length(immune$g2) * (xibar[2] - xbar) ^ 2 %>% as.numeric()
+ssb3 <- length(immune$g3) * (xibar[3] - xbar) ^ 2 %>% as.numeric()
+ssb <- (ssb1 + ssb2 + ssb3) %>% print()
+
+## Double check
+sst <- (sum((immune_long$response - xbar) ^ 2)) %>% print()
+as.numeric(ssw + ssb) 
+```
+
+- Within-group sum of square: 2971.667
+- Between-group sum of square: 62127.47
+- Total sum of square: 62127.47
+
+---
+
+4. What is your conclusion for ANOVA? Conclude it at the significant level of $\alpha=0.05$. RUBRIC The test statistic. The critical value. The p-value. The final conclusion.
+
+```{r}
+# Test statistic --- F score
+msw <- ssw / dfw
+msb <- ssb / dfb
+f_score <- (msb / msw) %>% print()
+f_critical <- qf(0.95, df1 = dfb, df2 = dfw) %>% print()
+qvalue <- pf(f_score, df1 = dfb, df2 = dfw, lower.tail = FALSE) %>% print()
+```
+
+- Test statistic: 0.175821
+- Critical value: 4.737414
+- P-value: 0.8423603
+- Conclusion: Fail to reject $H_0$ at the significance level of $\alpha=0.05$. There is no difference between the three groups.
