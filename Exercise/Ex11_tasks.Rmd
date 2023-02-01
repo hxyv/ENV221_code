@@ -2,21 +2,11 @@
 title: "Ex11_tasks"
 author: "Xingyu.Hu"
 date: ""
-output: 
-    html_document: 
-      theme: sandstone
-      highlight: pygments
+output: html_document
 ---
-```{css, echo=FALSE}
-.watch-out {
-  background-color: white;
-  border: 1px solid black;
-}
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(class.source = "watch-out")
 library(ggplot2)
 library(dplyr)
 library(readxl)

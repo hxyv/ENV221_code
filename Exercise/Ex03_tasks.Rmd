@@ -1,0 +1,140 @@
+---
+title: "Ex03_tasks"
+author: "Xingyu.Hu"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+The Iris dataset was introduced in Lecture 1. Import it into R. This and the subsequent tasks will do some analysis based on this dataset.
+
+1. Insert a column named "petal_length_level" in the iris data, showing whether the petal length is greater than 4. Two values in this column: "< 4", ">= 4".
+
+```{r}
+iris$petal_width_level <- ifelse(iris$Petal.Length < 4,
+                                 '< 4',
+                                 '>= 4')
+```
+
+---
+
+2. Insert a column named "sepal_length_level" in the iris data, showing whether the sepal width is greater or smaller than 3. Three values in this column: "< 3", "= 3", "> 3"
+
+```{r}
+iris$sepal_width_level <- ifelse(iris$Sepal.Width > 3, 
+                                 '> 3', 
+                                 ifelse(iris$Sepal.Width == 3, 
+                                        '= 3', 
+                                        '> 3'))
+```
+
+---
+
+3. Use the loop function: cut the iris data frame into three data frames based on the three kinds of iris species, and save each of them in a ".csv" file.
+
+```{r}
+setosa <- data.frame()
+versicolor <- data.frame()
+virginica <- data.frame()
+
+for(i in 1:nrow(iris)){
+    if(iris$Species[i] == 'setosa'){
+        setosa <- rbind(setosa, iris[i,])
+    } else if(iris$Species[i] == 'versicolor'){
+        versicolor <- rbind(versicolor, iris[i,])
+    } else if(iris$Species[i] == 'virginica'){
+        virginica <- rbind(virginica, iris[i,])
+    }
+    
+    if(i == nrow(iris)){
+        write.csv(setosa, 'setosa.csv')
+        write.csv(versicolor, 'versicolor.csv')
+        write.csv(virginica, 'virginica.csv')
+    }
+}
+```
+
+---
+
+4. Body mass index (BMI) is a measure of body fat based on height and weight tha applies to adult men and women. Create a self-defined function for calculating BMI from the height and weight.
+
+```{r}
+bmi <- function(height, weight){
+    x <- weight / height ^ 2
+    return(x)
+}
+```
+
+---
+
+5. Apply this function to the ENV221 students dataset and add a new column for the BMI values.
+
+```{r}
+df_stud <- read.csv("Data/students_env221.csv")
+df_stud$BMI <- bmi(df_stud$HEIGHT/100, df_stud$WEIGHT)
+```
+
+---
+
+6. Install the MSG package from GitHub ("yihui/MSG")
+
+```{r}
+library(remotes)
+install_github("yihui/MSG")
+```
+
+---
+
+7. What can MSG used for?
+
+```{r}
+??MSG
+# Datasets and functions for the Chinese book “Modern Statistical Graphics”.
+```
+
+---
+
+8. How popular is MSG?
+
+```{r}
+library(beginr)
+beginr::plotpkg("MSG")
+```
+
+---
+
+9. What is the function msg() used for?
+
+```{r}
+??msg()
+# Plot a graph with a pre-installed R script
+```
+
+---
+
+10. Who are the authors of MSG? Can you search the internet for more information of them?
+
+```{r}
+# https://yihui.org/
+```
+
+---
+
+11. Give the citation of the MSG package.
+
+```{r}
+citation('MSG')
+# Xie Y, Zhao P (2022). _MSG: Data and Functions for the Book Modern Statistical Graphics_. R package version 0.8.1, <https://github.com/yihui/MSG>.
+```
+
+
+
+
+
+
+

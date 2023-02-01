@@ -1,0 +1,106 @@
+---
+title: "Ex11_tasks"
+author: "Xingyu.Hu"
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+```
+
+---
+
+A geneticist studies candidate genes for type 2 diabetes. A point mutation (G to A) in a potassium-channel genes has been identified which results in substitution of a lysine (K) for a glutamic acid (E) in the protein. She wants to study if there is association of the genotype at this locus with diabetes. Genotyping was carried out for this mutation in normal control subjects and in a group of randomly selected diabetic patients. The frequencies of the 3 possible genotypes (E/E, E/K, and K/K) are given in the following table.
+
+| Genotype | Diabetics | Controls |
+| :--: | :--: | :--: |
+| G/G (E/E) | 133 | 215 |
+| G/A (E/K) | 161 | 152 |
+| A/A (K/K) | 66 | 30 |
+
+This and the subsequent tasks will do some analysis based on this dataset.
+
+1. Give the reproducible R codes for producing a barplot, which shows the patient numbers for each genotype in each group. RUBRIC: The bars. Correct labels. Elegant layout.
+
+```{r}
+freq <- data.frame(row.names = c("G/G (E/E)", "G/A (E/K)", "A/A (K/K)"),
+                   Diabetics = c(133, 161, 66),
+                   Controls = c(215, 152, 30))
+
+tb <- matrix(c(133, 215, 161, 152, 66, 30), nrow = 3, byrow = TRUE, 
+             dimnames = list(c("E/E", "E/K", "K/K"), c("Diabetics", "Controls")))
+
+par(mar=c(3, 6, 1, 1))
+ggplot(freq) +
+    geom_bar(stat = "identity", fill = "steelblue") +
+    geom_text(aes(label = Diabetics), vjust = 1.6, size = 3.5) +
+    theme_minimal() +
+    coord_flip()
+
+ggplot(freq, aes(x = Diabetics, y = Genotype)) +
+    geom_col()
+    ```
+
+---
+
+2. What hypothesis test should you choose for demonstrating the assumption? RUBRIC: The name of the hypothesis test.
+
+- $\chi^2$ test.
+
+---
+
+3. What are your null hypothesis and alternative hypothesis for demonstrating your assumption? RUBRIC: The null hypothesis. The alternative hypothesis.
+
+- $H_0:$ At this locus, there's no association of the genotype with diabetes.
+- $H_1:$ Association of the genotype with diabetes at this locus.
+
+---
+
+4. What is your conclusion about your assumption? Conclude it at the significance level of $\alpha=0.05$. RUBRIC: The test statistic. The critical value. The p-value. The final conclusion.
+
+```{r}
+freq <- data.frame(row.names =  c("G/G (E/E)", "G/A (E/K)", "A/A (K/K)"),
+                   Diabetics = c(133, 161, 66),
+                   Controls = c(215, 152, 30))
+chit <- chisq.test(freq) %>% print()
+chit$statistic
+chit$p.value
+```
+
+- Reject the $H_0$. There is no significant association between the locus point mutation and diabetes.
+
+---
+
+A researcher claims that the mean concentration of lead (Pb) in the sediment is 0.16 mg/L. No evidence shows the Pb concentration follows the normal distribution. You collected 11 random sediment samples to test this claim. The sample mean concentration of Pb is 0.23 mg/L and standard deviation is 0.03 mg/L. This and the subsequent tasks will do some analysis based on this data. You want test the claim that the mean Pb concentration is 0.16 mg/L.
+
+5. What hypothesis test should you choose? Choose the hypothesis name, the sample type (a, b), and the tail type (1 - 2), if applicable.
+
+- Two-tailed t-test
+
+---
+
+6. Water from three sources in Suzhou - Dushu Lake, Jinji Lake and control - were fed to Sprague-Dawley rats and the level of packed red blood cells after centrifugation (called the "haematocrit", HTC) was measured after 48 hours. You wonder if the haematocrit measurements are the same for all water sources. The results (in  vol%) were as follows:
+
+- Control: 38, 40, 32, 36, 40, 40, 38, 40, 38, 40, 36, 40, 40, 35, 45
+- Dushu Lake: 56, 60, 50, 50, 50, 35, 40, 40, 55, 35
+- Jinji Lake: 40, 42, 38, 46, 36
+
+What hypothesis test should you choose?
+
+- ANOVA
+
+---
+
+7. A scientist estimates that the mean nitrogen dioxide in this city is equal to 28 ppb. You determine the nitrogen dioxide levels for 34 randomly selected days. The results (in ppb) are: 24, 36, 44, 35, 44, 34, 29, 40, 39, 43, 41, 32, 33, 29, 29, 43, 25, 39, 25, 42, 29, 22, 22, 25, 14, 15, 14, 29, 25, 27, 22, 24, 18, 17
+Assume the population standard deviation is 9 ppb. You wnat to see if your data support the scientist estimate. What hypothesis test should you choose?
+
+- z-test
+
+---
+
+8. Trichloroethylene (TCE) concentrations (mg/L) at 10 randomly selected groundwater monitoring wells before remediation and the same wells after remediation. You want  know whether the remediation has effect on the groundwater regarding the TCE concentration. What hypothesis test should you choose?
+
+- F-test

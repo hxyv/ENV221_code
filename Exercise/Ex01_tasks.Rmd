@@ -1,0 +1,77 @@
+---
+title: "Ex01_tasks"
+author: "Xingyu.Hu"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+```
+
+---
+
+The New York Air Quality database shows daily air quality measurements in New York, May to September 1973. The measurements include mean ozone in parts per billion from 1300 to 1500 hours at Roosevelt Island, solar radiation in Langleys in the frequency band 4000-7000 Angstroms from 800 to 1200 hours at Central Park, average wind speed in miles per hours at 700 and 1000 hours at LaGuardia Airport, maximum daily tmeperature in degrees Fahrenheit at LaGuardia Airport.
+
+Download the data file airquality.csv. This and subsequent tasks will do some analysis based on this dataset.
+
+1. Import it into R as a data frame.
+
+```{r}
+airquality <- read.csv("Data/airquality.csv")
+```
+
+---
+
+2. Summarize the dataset.
+
+```{r}
+summary(airquality)
+```
+
+---
+
+3. Make a scatter plot with two numeric variables, and add a linear fitted line.
+
+```{r}
+airquality %>%
+    filter(Month == 5) %>%
+ggplot(aes(x = Day, y = Ozone)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE, formular = y ~ x) +
+    theme_bw()
+```
+
+---
+
+The ENV221 Students dataset shows the survery data about these students.
+
+Download the data files students_env_221.csv. This and subsequent tasks will do some analysis based on this dataset.
+
+1. Import it into R as a data frame.
+
+```{r}
+stud <- read.csv("Data/students_env221.csv")
+```
+
+---
+
+2. Summarize the dataset.
+
+```{r}
+summary(stud)
+```
+
+---
+
+3. Make a scatter plot with two numeric variables, and add a linear fitted line.
+
+```{r}
+ggplot(stud, aes(x = HEIGHT, y = SHOE)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE, formular = y ~ x) +
+    theme_bw()
+```
+

@@ -1,0 +1,158 @@
+---
+title: "Ex04_tasks"
+author: "Xingyu.Hu"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(GGally)
+```
+
+---
+
+The Air Quality dataset was introduced in Lecture 1. Import it into R. This and the subsequent tasks will do some analysis based on this dataset. 
+
+1. Make a boxplot of the early afternoon ozone concentration in June.
+
+```{r}
+boxplot(airquality[airquality$Month == 6, 1],
+        main = "Boxplot of the early afternoon ozone concentration in June",
+        ylab = "Ozone Concentration (ppb)")
+
+ozone_boxplot <- ggplot(airquality[airquality$Month == 6,]) + 
+    geom_boxplot(aes(Ozone)) +
+    labs(title = "Boxplot of the early afternoon ozone concentration in June",
+         x ="Ozone Concentration (ppb)")
+
+ozone_boxplot
+```
+
+---
+
+2. Make a histogram of the early afternoon ozone concentration in June.
+
+```{r}
+hist(airquality[airquality$Month == 6, 1],
+     main = "Histogram of the early afternoon ozone concentration in June",
+     xlab = "Ozone Concentration (ppb)")
+
+ozone_histogram <- ggplot(airquality[airquality$Month == 6,]) +
+    geom_histogram(aes(Ozone)) +
+    labs(title = "Histogram of the ealy afternoon ozone concentration in June",
+         x = "Ozone Concentration (ppb)", 
+         y = "Frequency")
+
+ozone_histogram
+```
+
+---
+
+3. Save the boxplot and histogram as .pdf files.
+
+```{r}
+ggsave("Ozone_boxplot.pdf", ozone_boxplot, path = 'Graphs')
+ggsave("Ozone_histrogram.pdf", ozone_histogram, path = 'Graphs')
+```
+
+---
+
+The ENV221 Students dataset was introduced in Lecture 2. Import it into R. This and subsequent tasks will do some analysis based on this dataset.
+
+1. Make a scatter plot for the weight against the height.
+
+```{r}
+stud <- read.csv('Data/students_env221.csv')
+
+stud_weight_height_scatter <- ggplot(stud, aes(x = HEIGHT, y = WEIGHT)) +
+                                geom_point() +
+                                geom_smooth(method = "lm") +
+                                labs(title = "Relation between weight and height",
+                                     x = "Height /cm",
+                                     y = "Weight /kg")
+
+stud_weight_height_scatter
+```
+
+---
+
+2. Make histograms of the BMI for the female and male students, respectively.
+
+```{r}
+stud_new <- read.csv('Data/students_ENV221_new.csv')
+
+male_bmi <- ggplot(stud_new[stud_new$GENDER == 'Male',]) +
+                geom_histogram(aes(BMI)) + 
+                labs(title = "BMI of male students",
+                     y = "Frequency")
+
+male_bmi
+
+female_bmi <- ggplot(stud_new[stud_new$GENDER == 'Female',]) +
+                geom_histogram(aes(BMI)) + 
+                labs(title = "BMI of female students",
+                     y = "Frequency")
+
+female_bmi
+```
+
+---
+
+3. Make a bar plot of the number of the students at different levels in Statistics and R.
+
+```{r}
+stat_bar <- ggplot(stud) +
+                geom_bar(aes(STAT)) +
+                labs(title = "Number of the students at different levels in Statistics",
+                     x = "Knowledge Level",
+                     y = "Frequency")
+
+stat_bar
+
+r_bar <- ggplot(stud) + 
+            geom_bar(aes(R)) +
+            labs(title = "Number of the students at different levels in R",
+                 x = "Knowledge Level",
+                 y = "Frequency")
+
+r_bar
+```
+
+---
+
+4. Make a pair plot of all the numeric variables in the dataset.
+
+```{r}
+numeric_pairs <- ggpairs(stud_new[, c(4, 5, 6, 11)], 
+                         aes(colour = stud$GENDER, alpha = 0.5))
+```
+
+---
+
+5. Save the graph as .pdf files.
+
+```{r}
+ggsave('stud_weight_height_scatter.pdf', 
+       stud_weight_height_scatter, 
+       path = 'Graphs')
+
+ggsave('male_bmi.pdf', male_bmi, path = 'Graphs')
+ggsave('female_bmi.pdf', female_bmi, path = 'Graphs')
+
+ggsave('stat_bar.pdf', stat_bar, path = 'Graphs')
+ggsave('r_bar.pdf', r_bar, path = 'Graphs')
+
+ggsave('numeric_paris.pdf', numeric_pairs, path = 'Graphs')
+```
+
+
+
+
+
+
+
+
+
+
